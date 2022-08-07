@@ -4,8 +4,9 @@ namespace App\Entities;
 use App\Models\Chapter as Model;
 use App\Models\Paragraph as ParagraphModel;
 use Illuminate\Support\Carbon;
+use JsonSerializable;
 
-class Chapter
+class Chapter implements JsonSerializable
 {
     private Model $model;
 
@@ -106,5 +107,17 @@ class Chapter
     {
         $this->model->save();
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'chapter_id' => $this->chapter_id(),
+            'book_id' => $this->book_id(),
+            'chapter_title' => $this->chapter_title(),
+            'sequence' => $this->sequence(),
+            'start_page' => $this->start_page(),
+            'paragraphs' => $this->model->relationLoaded('paragraphs') ? $this->paragraphs() : [],
+        ];
     }
 }

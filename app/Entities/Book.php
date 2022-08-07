@@ -129,6 +129,7 @@ class Book implements JsonSerializable
             'author_name' => $this->author_name(),
             'total_pages' => $this->total_pages(),
             'published_date' => $this->published_date()->format('Y-m-d'),
+            'chapters' => $this->model->relationLoaded('chapters') ? $this->chapters() : [],
         ];
     }
 }

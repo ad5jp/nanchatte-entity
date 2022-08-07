@@ -11,6 +11,23 @@ use Illuminate\Support\Collection;
 class BookRepository
 {
     /**
+     * 1件取得（Chapter, Paragraph まで含む）
+     *
+     * @param integer $book_id
+     * @return Book|null
+     */
+    public function find(int $book_id) : ?Book
+    {
+        /** @var Model $book */
+        $book = Model::with([
+            'chapters',
+            'chapters.paragraphs'
+        ])->find($book_id);
+
+        return $book ? $book->toEntity() : null;
+    }
+
+    /**
      * 検索
      *
      * @param array $conditions

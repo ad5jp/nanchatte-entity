@@ -3,8 +3,9 @@ namespace App\Entities;
 
 use App\Models\Paragraph as Model;
 use Illuminate\Support\Carbon;
+use JsonSerializable;
 
-class Paragraph
+class Paragraph implements JsonSerializable
 {
     private Model $model;
 
@@ -71,5 +72,16 @@ class Paragraph
     {
         $this->model->save();
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'paragraph_id' => $this->paragraph_id(),
+            'chapter_id' => $this->chapter_id(),
+            'content' => $this->content(),
+            'sequence' => $this->sequence(),
+            'start_page' => $this->start_page(),
+        ];
     }
 }
