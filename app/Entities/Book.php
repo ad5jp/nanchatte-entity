@@ -4,8 +4,9 @@ namespace App\Entities;
 use App\Models\Book as Model;
 use App\Models\Chapter as ChapterModel;
 use Illuminate\Support\Carbon;
+use JsonSerializable;
 
-class Book
+class Book implements JsonSerializable
 {
     private Model $model;
 
@@ -51,9 +52,9 @@ class Book
         return $this->model->total_pages;
     }
 
-    public function publish_date(): Carbon
+    public function published_date(): Carbon
     {
-        return $this->model->publish_date;
+        return $this->model->published_date;
     }
 
     /**
@@ -113,5 +114,21 @@ class Book
     {
         $this->model->save();
         return $this;
+    }
+
+    // @comment
+    // コントローラで JsonResource に詰め替えてもよいが、
+    // 結局 Model::whenLoaded() が使えず、
+    // リレーション返却の必要/不要を制御できないため、
+    // いっそ Entity にリソースの機能まで持たせるのがベターか。
+    public function jsonSerialize(): array
+    {
+        return [
+            'book_id' => $this->book_id(),
+            'book_title' => $this->book_title(),
+            'author_name' => $this->author_name(),
+            'total_pages' => $this->total_pages(),
+            'published_date' => $this->published_date()->format('Y-m-d'),
+        ];
     }
 }
