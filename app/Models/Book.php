@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Entities\Book as BookEntity;
+use App\Domain\Book\Book as BookEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $book_id
@@ -15,28 +16,23 @@ use Illuminate\Support\Carbon;
  * @property Carbon $published_date
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @mixin \Eloquent
+ *
+ * @property Collection<Chapter> $chapters
  */
 class Book extends Model
 {
     protected $table = "m_books";
     protected $primaryKey = 'book_id';
 
-    protected $dates = [
-        'published_date',
-        'created_at',
-		'updated_at',
-    ];
-
     protected $casts = [
         'book_id' => 'integer',
 		'total_pages' => 'integer',
-		'published_date' => 'date:Y-m-d',
-		'created_at' => 'date:Y-m-d H:i:s',
-		'updated_at' => 'date:Y-m-d H:i:s',
+		'published_date' => 'datetime',
+		'created_at' => 'datetime',
+		'updated_at' => 'datetime',
     ];
 
-    public function chapters() : HasMany
+    public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class, 'book_id', 'book_id');
     }
