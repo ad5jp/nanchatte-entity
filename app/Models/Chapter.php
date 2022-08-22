@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use App\Entities\Chapter as ChapterEntity;
+use App\Domain\Book\Chapter as ChapterEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $chapter_id
@@ -16,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int $start_page
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @mixin \Eloquent
+ * @property Collection<Paragraph> $paragraphs
  */
 class Chapter extends Model
 {

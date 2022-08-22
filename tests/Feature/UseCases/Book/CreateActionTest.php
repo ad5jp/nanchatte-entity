@@ -1,19 +1,36 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\UseCases\Book;
 
-use App\Repositories\BookRepository;
-use App\UseCases\AddBook;
+use App\Domain\Book\BookRepository;
+use App\UseCases\Book\CreateAction;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AddBookTest extends TestCase
+class CreateActionTest extends TestCase
 {
-    public function test_simple()
+    use RefreshDatabase;
+
+    private CreateAction $action;
+
+    protected function setUp(): void
     {
-        $repository = new BookRepository();
-        $action = new AddBook($repository);
-        $action([
+        parent::setUp();
+        $repository = $this->app->make(BookRepository::class);
+        $db = $this->app->make(DatabaseManager::class);
+
+        $this->action = new CreateAction($repository, $db);
+    }
+
+    /**
+     * @test
+     */
+    public function Book_Entity_単体の登録(): void
+    {
+
+        /* @noinspection PhpUnhandledExceptionInspection */
+        $result = ($this->action)([
             'book_title' => 'オブジェクト指向でなぜつくるのか 第3版',
             'author_name' => '平澤章',
             'total_pages' => 410,
@@ -23,11 +40,13 @@ class AddBookTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function test_nested()
+    /**
+     * @test
+     */
+    public function Book_Entity_と関連_Entity_の一括登録(): void
     {
-        $repository = new BookRepository();
-        $action = new AddBook($repository);
-        $action([
+        /* @noinspection PhpUnhandledExceptionInspection */
+        $result = ($this->action)([
             'book_title' => 'オブジェクト指向でなぜつくるのか 第3版',
             'author_name' => '平澤章',
             'total_pages' => 410,
